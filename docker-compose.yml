@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  frontend:
+    depends_on: 
+      - backend
+    build: ./frontend
+    ports:
+      - 3000:3000
+
+  backend:
+    depends_on:
+      - mysql
+    build: ./backend
+    ports:
+      - 3001:3001
+      - 3002:3002
+    environment:
+      - DB_URL=mysql://root:root@mysql:3306/animes_database
+    volumes:
+      - ./backend/Data:/app/Data
+ 
+  mysql:
+    image: mysql:5.7.40
+    container_name: servidor_mysql
+    restart: always
+    volumes:
+      - ./deploy/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "animes_database"
+      MYSQL_ROOT_PASSWORD: "root"
+
+
+volumes:
+  vidly:
